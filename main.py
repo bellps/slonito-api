@@ -14,6 +14,8 @@ logger.setLevel(logging.DEBUG)
 
 app = FastAPI()
 
+torch.cuda.empty_cache()
+
 model = LocalGemma2ForCausalLM.from_pretrained("google/gemma-2-2b-it", preset="memory", device="cuda")
 tokenizer = AutoTokenizer.from_pretrained("google/gemma-2-2b-it")
 
@@ -25,9 +27,9 @@ class PromptRequest(BaseModel):
 
 def formated_prompt(request):
     return f"""
-    Using the SQL schema:
+    You are a relational database specialist, with the focus of creating PostgreSQL queries. Using the SQL schema:
     {request.sql_schema}
-    Generate only a SQL query for the following question, with the PostgreSQL guidelines:
+    Generate only a SQL query for the following question, no explanation needed:
     {request.prompt}
     """
 
@@ -44,9 +46,11 @@ async def generate_text(request: PromptRequest):
         logger.debug('Starting generation...')
 
         generated_ids = model.generate(**model_inputs, max_new_tokens=1024, do_sample=True)
-        decoded_text = tokenizer.batch_decode(generated_ids, skip_special_tokens=True, clean_up_tokenization_spaces=True)
+        decoded_text = tokenizer.batch_decode(generated_ids)
 
         logger.debug('Generation completed!')
+
+        torch.cuda.empty_cache()
 
         return {"response": decoded_text[0]}
     except Exception as e:
@@ -67,4 +71,4 @@ async def root():
     return {"message": "SLONITO: Up and Running"}
 
 
-# uvicorn main:app --reload --host 192.168.0.189 --port 4000 --log-level debug
+# uvicorn main:app --reload --host 0.0.0.0 --port 4000 --log-level debug
