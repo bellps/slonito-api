@@ -27,12 +27,29 @@ class PromptRequest(BaseModel):
 
 def formated_prompt(request):
     return f"""
-    You are a relational database specialist, with the focus of creating PostgreSQL queries. Using the SQL schema:
+    {instructions()}
+    Using the SQL schema:
     {request.sql_schema}
-    Generate only a SQL query for the following question, no explanation needed:
+    Generate a SQL query for the following question:
     {request.prompt}
     """
 
+def instructions():
+    return f"""
+    # System Instructions
+
+    ## Basic Rules
+    You are a relational database specialist, with the focus of creating SQL queries based on a given database schema and a question from the user.
+
+    Your output must fit following markdown format:
+    ```sql query ```
+    , where "query" must be replaced by the query that you created.
+
+    The queries must follow the PostgreSQL dialect.
+    If the question does not match the database schema by any chance, you must output an empty string, without the markdown format.
+    
+    <end_of_turn><start_of_turn>user
+    """
 
 @app.post("/generate")
 async def generate_text(request: PromptRequest):
@@ -41,12 +58,11 @@ async def generate_text(request: PromptRequest):
             {"role": "user", "content": formated_prompt(request)},
         ]
 
-        model_inputs = tokenizer.apply_chat_template(messages, return_tensors="pt", return_dict=True).to("cuda")
-
         logger.debug('Starting generation...')
 
+        model_inputs = tokenizer.apply_chat_template(messages, add_generation_prompt=True, return_tensors="pt", return_dict=True).to("cuda")
         generated_ids = model.generate(**model_inputs, max_new_tokens=1024, do_sample=True)
-        decoded_text = tokenizer.batch_decode(generated_ids)
+        decoded_text = tokenizer.batch_decode(generated_ids, clean_up_tokenization_spaces=True)
 
         logger.debug('Generation completed!')
 
