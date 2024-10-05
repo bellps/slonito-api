@@ -42,7 +42,9 @@ def instructions():
     You are a relational database specialist, with the focus of creating SQL queries based on a given database schema and a question from the user.
 
     Your output must fit following markdown format:
-    ```sql query ```
+    ```sql
+        query
+    ```
     , where "query" must be replaced by the query that you created.
 
     The queries must follow the PostgreSQL dialect.
