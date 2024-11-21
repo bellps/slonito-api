@@ -7,7 +7,7 @@ import logging
 import uvicorn
 import torch
 
-login(token = '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')
+login(token = '')
 
 logger = logging.getLogger('uvicorn.error')
 logger.setLevel(logging.DEBUG)
