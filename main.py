@@ -4,20 +4,23 @@ from transformers import AutoTokenizer
 from huggingface_hub import login
 from local_gemma import LocalGemma2ForCausalLM
 import logging
-import uvicorn
 import torch
+import os
+from dotenv import load_dotenv
 
-login(token = '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')
+load_dotenv() 
 
-logger = logging.getLogger('uvicorn.error')
+login(token = os.getenv("HF_TOKEN"))
+
+logger = logging.getLogger("uvicorn.error")
 logger.setLevel(logging.DEBUG)
 
 app = FastAPI()
 
 torch.cuda.empty_cache()
 
-model = LocalGemma2ForCausalLM.from_pretrained("google/gemma-2-2b-it", preset="memory", device="cuda")
-tokenizer = AutoTokenizer.from_pretrained("google/gemma-2-2b-it")
+model = LocalGemma2ForCausalLM.from_pretrained(os.getenv("HF_MODEL"), preset="memory", device="cuda")
+tokenizer = AutoTokenizer.from_pretrained(os.getenv("HF_TOKENIZER"))
 
 
 class PromptRequest(BaseModel):
