@@ -47,10 +47,10 @@ Slonito API is the backend service responsible for converting natural language p
 ## Setup
 
 ```bash
-git clone https://github.com/your-username/slonito-api.git
+git clone https://github.com/bellps/slonito-api.git
 cd slonito-api
 pip install -r requirements.txt
-uvicorn main:app --reload --host 0.0.0.0 --port 4000
+uvicorn main:app --reload --host 0.0.0.0 --port 3001
 ```
 
 ### Environment Variables
