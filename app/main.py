@@ -44,8 +44,3 @@ async def marco():
 @app.get("/")
 async def root():
     return {"message": "SLONITO: Up and Running"}
-
-
-if __name__ == "__main__":
-    uvicorn.run("main:app", port=4000, log_level="debug", host="0.0.0.0")
-# uvicorn main:app --reload --host 0.0.0.0 --port 4000 --log-level debug
