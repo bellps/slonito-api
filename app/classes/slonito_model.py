@@ -1,11 +1,10 @@
 from transformers import AutoTokenizer
-from huggingface_hub import login
 from local_gemma import LocalGemma2ForCausalLM
 import os
 import torch
 
-from app.classes.prompt_formatter import PromptFormatter
-from app.classes.prompt_request import PromptRequest
+from .prompt_formatter import PromptFormatter
+from ..types.prompt_request import PromptRequest
 
 
 class SlonitoModel():

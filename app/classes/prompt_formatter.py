@@ -1,4 +1,4 @@
-from app.classes.prompt_request import PromptRequest
+from app.types.prompt_request import PromptRequest
 
 
 class PromptFormatter():
