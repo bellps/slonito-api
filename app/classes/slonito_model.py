@@ -2,6 +2,7 @@ from transformers import AutoTokenizer
 from local_gemma import LocalGemma2ForCausalLM
 import os
 import torch
+import re
 
 from .prompt_formatter import PromptFormatter
 from ..types.prompt_request import PromptRequest
@@ -13,7 +14,13 @@ class SlonitoModel():
 
         self.model = LocalGemma2ForCausalLM.from_pretrained(os.getenv("HF_MODEL"), preset="memory", device="cuda")
         self.tokenizer = AutoTokenizer.from_pretrained(os.getenv("HF_TOKENIZER"))
-
+    
+    def parsed_response(decoded_text: str) -> str:
+        match = re.search(r'<start_of_turn>model\n?(.*?)<end_of_turn>', decoded_text, re.DOTALL)
+        
+        if not match: return ''
+        
+        match.group(1).strip()
 
     def generate_response(self, request: PromptRequest) -> str:
         prompt = [
@@ -26,4 +33,4 @@ class SlonitoModel():
 
         torch.cuda.empty_cache()
 
-        return decoded_text[0]
+        return self.parsed_response(decoded_text[0])
