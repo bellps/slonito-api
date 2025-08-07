@@ -39,6 +39,7 @@ Slonito API is the backend service responsible for converting natural language p
 ## Requirements
 
 - CUDA-compatible GPU (recommended for inference)
+  - **CUDA Toolkit 12.9**
 
 - Python 3.10+
 
@@ -63,7 +64,8 @@ HF_MODEL="google/gemma-2-2b-it"
 HF_TOKENIZER="google/gemma-2-2b-it"
 ```
 
-If you’re using local-gemma, make sure your GPU drivers and CUDA are properly set up.
+> [!IMPORTANT]
+> If you’re using local-gemma, make sure your GPU drivers and CUDA are properly set up.
 
 ## API Endpoint
 
