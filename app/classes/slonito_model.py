@@ -15,12 +15,12 @@ class SlonitoModel():
         self.model = LocalGemma2ForCausalLM.from_pretrained(os.getenv("HF_MODEL"), preset="memory", device="cuda")
         self.tokenizer = AutoTokenizer.from_pretrained(os.getenv("HF_TOKENIZER"))
     
-    def parsed_response(decoded_text: str) -> str:
+    def parsed_response(self, decoded_text: str) -> str:
         match = re.search(r'<start_of_turn>model\n?(.*?)<end_of_turn>', decoded_text, re.DOTALL)
         
         if not match: return ''
         
-        match.group(1).strip()
+        return match.group(1).strip()
 
     def generate_response(self, request: PromptRequest) -> str:
         prompt = [
